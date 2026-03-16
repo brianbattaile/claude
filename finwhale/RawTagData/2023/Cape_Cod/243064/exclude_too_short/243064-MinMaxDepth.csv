@@ -1,0 +1,6 @@
+DeployID,Ptt,DepthSensor,Instr,Date,LocationQuality,Latitude,Longitude,MinDepth,MinAccuracy,MinSource,MaxDepth,MaxAccuracy,MaxSource
+243064,243064,,Mk10,16:00:00 12-Oct-2023,,,,0.000000,0.000000,Behavior,61.750000,0.750000,Behavior
+243064,243064,,Mk10,17:00:00 12-Oct-2023,,,,0.000000,0.000000,Behavior,59.750000,0.750000,Behavior
+243064,243064,,Mk10,20:00:00 12-Oct-2023,,,,0.000000,0.000000,Behavior,63.750000,0.750000,Behavior
+243064,243064,,Mk10,23:00:00 12-Oct-2023,,,,0.000000,0.000000,Behavior,28.750000,0.250000,Behavior
+243064,243064,,Mk10,00:00:00 13-Oct-2023,,,,0.000000,0.000000,Behavior,36.750000,0.250000,Behavior

@@ -1,0 +1,16 @@
+DeployID,Ptt,DepthSensor,Instr,Date,LocationQuality,Latitude,Longitude,Depth,Temperature,Source
+BOF2,267426,,Mk10,17:00:00 24-Jul-2024,,,,0.0,28.9,Status
+BOF2,267426,,Mk10,18:00:00 24-Jul-2024,,,,0.4,29.0,TimeSeries
+BOF2,267426,,Mk10,19:00:00 24-Jul-2024,,,,0.4,31.1,TimeSeries
+BOF2,267426,,Mk10,20:00:00 24-Jul-2024,,,,0.4,24.3,TimeSeries
+BOF2,267426,,Mk10,21:00:00 24-Jul-2024,,,,0.4,22.6,TimeSeries
+BOF2,267426,,Mk10,16:00:00 10-Aug-2024,,,,0.0,13.2,Status
+BOF2,267426,,Mk10,15:00:00 13-Aug-2024,,,,0.0,16.0,Status
+BOF2,267426,,Mk10,22:00:00 13-Aug-2024,,,,0.0,12.5,Status
+BOF2,267426,,Mk10,16:00:00 16-Aug-2024,,,,0.0,17.2,Status
+BOF2,267426,,Mk10,17:00:00 21-Aug-2024,,,,0.0,15.9,Status
+BOF2,267426,,Mk10,17:00:00 23-Aug-2024,,,,0.0,17.7,Status
+BOF2,267426,,Mk10,03:00:00 25-Aug-2024,,,,0.0,12.6,Status
+BOF2,267426,,Mk10,12:00:00 29-Aug-2024,,,,0.0,13.6,Status
+BOF2,267426,,Mk10,03:00:00 31-Aug-2024,,,,0.0,12.5,Status
+BOF2,267426,,Mk10,13:00:00 31-Aug-2024,,,,0.0,14.7,Status

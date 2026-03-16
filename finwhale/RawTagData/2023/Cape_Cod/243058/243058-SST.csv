@@ -1,0 +1,12 @@
+DeployID,Ptt,DepthSensor,Instr,Date,LocationQuality,Latitude,Longitude,Depth,Temperature,Source
+243058,243058,,Mk10,16:00:00 25-Jul-2023,,,,0.8,21.5,TimeSeries
+243058,243058,,Mk10,22:00:00 25-Jul-2023,,,,0.6,20.6,TimeSeries
+243058,243058,,Mk10,23:00:00 25-Jul-2023,,,,0.6,20.6,TimeSeries
+243058,243058,,Mk10,04:00:00 03-Aug-2023,,,,0.4,17.8,TimeSeries
+243058,243058,,Mk10,05:00:00 03-Aug-2023,,,,0.4,18.3,TimeSeries
+243058,243058,,Mk10,10:00:00 03-Aug-2023,,,,0.4,18.1,TimeSeries
+243058,243058,,Mk10,11:00:00 03-Aug-2023,,,,1.5,18.1,TimeSeries
+243058,243058,,Mk10,13:00:00 03-Aug-2023,,,,0.4,18.2,TimeSeries
+243058,243058,,Mk10,14:00:00 03-Aug-2023,,,,1.0,17.6,TimeSeries
+243058,243058,,Mk10,14:00:00 04-Aug-2023,,,,0.0,18.0,Status
+243058,243058,,Mk10,13:00:00 06-Aug-2023,,,,0.0,18.6,Status

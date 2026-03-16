@@ -1,0 +1,11 @@
+DeployID,Ptt,DepthSensor,Instr,SW,RTC,Received,Time Offset,LocationQuality,Latitude,Longitude,Type,HauledOut,BrokenThermistor,BrokenLink,Transmits,BattVoltage,TransmitVoltage,TransmitCurrent,Temperature,Depth,MaxDepth,ZeroDepthOffset,LightLevel,NoDawnDusk,ReleaseType,ReleaseTime,InitiallyBroken,BurnMinutes,ReleaseDepth,FastGPSPower,TWICPower,PowerLimit,WetDry,MinWetDry,MaxWetDry,WetDryThreshold,StatusWord,TransmitPower,Resets,PreReleaseTilt,PreReleaseTiltSd,PreReleaseTiltCount,XmitQueue,FastGPSLocNumber,FastGPSFailures,BattDiscon,Tilt,S11,ReleaseWetDry,ReleaseTemperature,MaxDepth,LLRangeToday,DeployStart,FirstPostReleaseTX,upright,SWBuild
+CCS-0187,234805,,Mk10,,15:40:58 04-Jul-2022,15:44:03 04-Jul-2022,185,,,,CRC,0,0,,,,0.992,0.220,,1.5,0.0,-1,,,,,,,,,,,255,21,21,80,,,,,,,,132,43,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,14:47:50 08-Jul-2022,14:50:55 08-Jul-2022,185,B,42.3103,-70.3073,CRC,0,0,,,,0.992,0.188,,1.5,30.0,-1,,,,,,,,,,,167,15,255,80,,,,,,,,416,304,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,,23:28:46 14-Jul-2022,,1,42.1748,-70.0445,CRC,0,0,,4688,3.376,0.992,0.208,17.00,1.5,28.0,-1,,,,,,,,,,,172,15,255,80,,,,,,,,900,760,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,09:48:32 16-Jul-2022,09:51:38 16-Jul-2022,186,A,41.8252,-69.8495,CRC,0,0,,,,0.992,0.176,,1.0,30.0,-1,,,,,,,,,,,212,15,255,80,,,,,,,,1000,856,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,,14:19:38 19-Jul-2022,,0,42.3296,-70.1605,CRC,0,0,,6544,3.376,0.992,0.252,18.00,1.5,38.0,-1,,,,,,,,,,,192,15,255,80,,,,,,,,1240,1090,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,,10:53:55 26-Jul-2022,,0,42.0940,-70.0454,,0,0,,8848,3.376,0.984,0.208,19.50,2.0,28.0,-1,,,,,,,,,,,,15,254,75,16406,,,,,,,,,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,,14:44:58 26-Jul-2022,,B,42.1121,-70.2784,,0,0,,8976,3.312,0.984,0.392,19.80,49.5,540.0,-1,,,,,,,,,,,,15,254,75,54987,,,,,,,,,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,16:08:19 26-Jul-2022,16:11:27 26-Jul-2022,188,B,42.0815,-70.1614,CRC,0,0,,,,0.992,0.164,,1.5,28.0,-1,,,,,,,,,,,215,15,255,75,,,,,,,,1763,1611,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,12:04:58 31-Jul-2022,12:08:07 31-Jul-2022,189,0,42.0793,-70.1730,CRC,0,0,,,,0.992,0.256,,1.5,42.0,-1,,,,,,,,,,,91,15,255,75,,,,,,,,2085,1928,0,,,,,,,,,,
+CCS-0187,234805,,Mk10,,,16:08:42 04-Aug-2022,,A,42.1098,-70.2755,CRC,0,0,,11408,3.248,0.992,0.396,21.90,1.5,32.0,-1,,,,,,,,,,,95,15,255,75,,,,,,,,2351,2191,0,,,,,,,,,,

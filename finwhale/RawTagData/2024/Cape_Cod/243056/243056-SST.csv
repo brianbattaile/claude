@@ -1,0 +1,5 @@
+DeployID,Ptt,DepthSensor,Instr,Date,LocationQuality,Latitude,Longitude,Depth,Temperature,Source
+CCS-0064,243056,,Mk10,23:00:00 05-Aug-2024,,,,0.0,21.1,Status
+CCS-0064,243056,,Mk10,00:00:00 22-Aug-2024,,,,0.0,21.9,Status
+CCS-0064,243056,,Mk10,03:00:00 22-Aug-2024,,,,0.0,21.8,Status
+CCS-0064,243056,,Mk10,14:00:00 25-Aug-2024,,,,0.0,22.1,Status

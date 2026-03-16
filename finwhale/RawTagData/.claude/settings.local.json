@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"C:/Users/Green Sturgeon/claude/finwhale\" -type f | xargs ls -la 2>/dev/null | sort -k5 -rn | head -20)"
+    ]
+  }
+}

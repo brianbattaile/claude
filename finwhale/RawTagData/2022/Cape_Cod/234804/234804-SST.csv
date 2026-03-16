@@ -1,0 +1,9 @@
+DeployID,Ptt,DepthSensor,Instr,Date,LocationQuality,Latitude,Longitude,Depth,Temperature,Source
+CCS-2001,234804,,Mk10,15:00:00 03-Jul-2022,,,,0.8,18.3,TimeSeries
+CCS-2001,234804,,Mk10,16:00:00 03-Jul-2022,,,,0.0,18.3,Status
+CCS-2001,234804,,Mk10,20:00:00 03-Jul-2022,,,,0.8,18.6,TimeSeries
+CCS-2001,234804,,Mk10,21:00:00 03-Jul-2022,,,,0.8,18.6,TimeSeries
+CCS-2001,234804,,Mk10,23:00:00 03-Jul-2022,,,,0.6,19.1,TimeSeries
+CCS-2001,234804,,Mk10,00:00:00 04-Jul-2022,,,,0.6,19.1,TimeSeries
+CCS-2001,234804,,Mk10,15:00:00 05-Jul-2022,,,,0.0,18.3,Status
+CCS-2001,234804,,Mk10,13:00:00 08-Jul-2022,,,,0.0,16.3,Status

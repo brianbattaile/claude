@@ -1,0 +1,2 @@
+DeployID,Ptt,Instr,SW,PercentDecoded,Passes,PercentArgosLoc,MsgPerPass,DS,DI,MinPower,AvgPower,MaxPower,MinInterval,EarliestXmitTime,LatestXmitTime,XmitDays,EarliestDataTime,LatestDataTime,DataDays,ReleaseDate,ReleaseType,DeployDate
+CCS-0187,234805,Mk10,,52,468,99,2,914,,,,,14,15:44:03 04-Jul-2022,09:36:41 07-Aug-2022,34,15:40:58 04-Jul-2022,11:34:27 06-Aug-2022,33,,,

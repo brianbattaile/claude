@@ -1,0 +1,13 @@
+# Mac resource fork files
+._*
+.DS_Store
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

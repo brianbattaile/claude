@@ -1,0 +1,8 @@
+DeployID,Ptt,DepthSensor,Instr,Date,LocationQuality,Latitude,Longitude,Depth,Temperature,Source
+CCS-2407,243067,,Mk10,05:00:00 24-Sep-2024,,,,0.0,16.0,Status
+CCS-2407,243067,,Mk10,15:00:00 25-Sep-2024,,,,0.0,15.9,Status
+CCS-2407,243067,,Mk10,16:00:00 27-Sep-2024,,,,0.0,16.4,Status
+CCS-2407,243067,,Mk10,05:00:00 30-Sep-2024,,,,0.0,16.6,Status
+CCS-2407,243067,,Mk10,23:00:00 01-Oct-2024,,,,0.0,16.7,Status
+CCS-2407,243067,,Mk10,14:00:00 02-Oct-2024,,,,0.0,16.0,Status
+CCS-2407,243067,,Mk10,02:00:00 04-Oct-2024,,,,0.0,17.8,Status
