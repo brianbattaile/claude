@@ -7,6 +7,7 @@ into an MP4 with ffmpeg.
 """
 
 import os
+import sys
 import subprocess
 import multiprocessing as mp
 
@@ -22,18 +23,18 @@ import cartopy.io.shapereader as shpreader
 
 # ─── Settings ─────────────────────────────────────────────────────────────────
 
-YEAR         = 2022
+YEAR         = int(sys.argv[1]) if len(sys.argv) > 1 else 2022
+PLOT_VAR     = sys.argv[2].upper() if len(sys.argv) > 2 else "SST"   # SST, SSS, SSTG, SSSG
 NC_FILE      = "E:/Zhitao/From Zhitao/SSTS_GRDT_22-24/SSTS_GRDT_combined.nc"
 LOCATIONS_IN = "Results/ssm_predicted_locations.csv"
-FRAMES_DIR   = "Results/movie_frames_py"
-OUTPUT_MP4   = "Results/sst_2022_whales_py.mp4"
-PLOT_VAR     = "SST"       # "SST", "SSS", "SSTG", or "SSSG"
+FRAMES_DIR   = f"Results/movie_frames_py_{YEAR}_{PLOT_VAR}"
+OUTPUT_MP4   = f"Results/{PLOT_VAR.lower()}_{YEAR}_whales_py.mp4"
 N_WORKERS    = max(1, mp.cpu_count() - 1)
-FPS          = 12
+FPS          = 24
 TRAIL_STEPS  = 10
 COLORMAP     = "RdYlBu_r"  # blue=cold, red=hot
-N_TEST_FRAMES = None       # set to 1 to render just the first frame for testing
-ZOOM_FRAMES   = 60         # frames over which to zoom from full extent to whale extent
+N_TEST_FRAMES = None       # set to an int to limit frames, None for all
+ZOOM_FRAMES   = 240        # frames over which to zoom from full extent to whale extent
 
 VAR_LABEL = {
     "SST":  "SST (°C)",
@@ -45,7 +46,7 @@ VAR_LABEL = {
 # ─── Frame rendering function (must be at module level for pickling) ───────────
 
 def render_frame(args):
-    k, frame_time, slab, locs, nc_lon, nc_lat, clim, extent = args
+    k, frame_time, slab, locs, nc_lon, nc_lat, clim, extent, in_zoom = args
     lon_min, lon_max, lat_min, lat_max = extent
 
     frame_file = os.path.join(FRAMES_DIR, f"frame_{k:04d}.png")
@@ -56,22 +57,16 @@ def render_frame(args):
     ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
     ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
-    # SST field
     im = ax.pcolormesh(
         nc_lon, nc_lat, slab,
         cmap=COLORMAP, vmin=clim[0], vmax=clim[1],
         shading="auto", transform=ccrs.PlateCarree()
     )
 
-    # Map features — fixed 10m resolution avoids resolution-switching jump during zoom
-    ax.add_feature(cfeature.NaturalEarthFeature('physical',  'land',                          '10m'),
-                   facecolor="lightgrey", zorder=2)
-    ax.add_feature(cfeature.NaturalEarthFeature('physical',  'coastline',                     '10m'),
-                   linewidth=0.6, zorder=3)
-    ax.add_feature(cfeature.NaturalEarthFeature('cultural',  'admin_1_states_provinces_lakes', '10m'),
-                   linewidth=0.4, edgecolor="grey", facecolor="none", zorder=3)
-    ax.add_feature(cfeature.NaturalEarthFeature('cultural',  'admin_0_boundary_lines_land',    '10m'),
-                   linewidth=0.5, zorder=3)
+    ax.add_feature(cfeature.LAND, facecolor="lightgrey")
+    ax.add_feature(cfeature.COASTLINE, linewidth=0.6)
+    ax.add_feature(cfeature.STATES, linewidth=0.4, edgecolor="grey")
+    ax.add_feature(cfeature.BORDERS, linewidth=0.5)
 
     # Plot each whale active near this frame time
     for whale_id, whale_locs in locs.groupby("id"):
@@ -113,7 +108,8 @@ def render_frame(args):
             transform=ax.transAxes, ha="right", va="bottom",
             fontsize=9, color="black")
 
-    gl = ax.gridlines(draw_labels=True, linewidth=0.3, color="grey", alpha=0.5)
+    # Suppress gridline labels during zoom to avoid jitter from repositioning labels
+    gl = ax.gridlines(draw_labels=not in_zoom, linewidth=0.3, color="grey", alpha=0.5)
     gl.top_labels = False
     gl.right_labels = False
 
@@ -156,9 +152,13 @@ if __name__ == "__main__":
 
     # 3. Read only the frames we need
     print(f"Reading {PLOT_VAR} data for {n_frames} frame(s)...")
-    data = ds.variables[PLOT_VAR][ti_use, :, :]
-    if hasattr(ds.variables[PLOT_VAR], '_FillValue'):
-        data = np.where(data == ds.variables[PLOT_VAR]._FillValue, np.nan, data)
+    raw = ds.variables[PLOT_VAR][ti_use, :, :]
+    if isinstance(raw, np.ma.MaskedArray):
+        data = raw.filled(np.nan).astype(float)
+    else:
+        data = np.array(raw, dtype=float)
+    data[~np.isfinite(data)] = np.nan
+    data[(data < -2) | (data > 50)] = np.nan
     ds.close()
     print("Data loaded.\n")
 
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     # Pre-download all cartopy shapefiles in the main process before spawning workers
     # (avoids race condition where multiple workers corrupt the same download)
     print("Pre-loading cartopy map data...")
-    for scale in ["50m", "10m"]:
+    for scale in ["110m", "50m"]:
         shpreader.natural_earth(resolution=scale, category="physical",  name="land")
         shpreader.natural_earth(resolution=scale, category="physical",  name="coastline")
         shpreader.natural_earth(resolution=scale, category="cultural",  name="admin_1_states_provinces_lakes")
@@ -202,7 +202,7 @@ if __name__ == "__main__":
 
     # 4. Render frames
     args_list = [
-        (k + 1, times_keep[k], data[k], locs, nc_lon, nc_lat, clim, frame_extents[k])
+        (k + 1, times_keep[k], data[k], locs, nc_lon, nc_lat, clim, frame_extents[k], k < ZOOM_FRAMES)
         for k in range(n_frames)
     ]
 
@@ -231,6 +231,12 @@ if __name__ == "__main__":
     ret = subprocess.run(cmd, capture_output=True, text=True)
     if ret.returncode == 0:
         print(f"Movie saved to: {OUTPUT_MP4}")
+        # Clean up individual frames now that the movie is assembled
+        for f in os.listdir(FRAMES_DIR):
+            if f.endswith(".png"):
+                os.remove(os.path.join(FRAMES_DIR, f))
+        os.rmdir(FRAMES_DIR)
+        print("Frames deleted.")
     else:
         print(f"ffmpeg failed:\n{ret.stderr}")
         print(f"Frames are in: {FRAMES_DIR}")
