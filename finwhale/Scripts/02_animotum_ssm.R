@@ -4,17 +4,21 @@ library(stringr)
 library(aniMotum)
 
 # ─── 1. Load location data ────────────────────────────────────────────────────
-# For each whale folder, prefer the *-1-Locations.csv (FastGPS + Argos combined)
-# over the plain *-Locations.csv (Argos only). Exclude Mac resource fork files (._).
+# For each whale folder, prefer the FastGPS+Argos combined file over the plain
+# Argos-only file. Exclude Mac resource fork files (._).
+# Cape Cod whales:    use *-1-Locations.csv
+# Bay of Fundy whales: use *-2-Locations.csv
 
 whale_dirs <- list.dirs("RawTagData", recursive = TRUE, full.names = TRUE) |>
   Filter(f = function(d) grepl("/[0-9]{6}$", d), x = _)
 
 location_files <- lapply(whale_dirs, function(dir) {
   whale_id <- basename(dir)
+  is_bof   <- grepl("Bay_Of_Fundy", dir)
 
-  # FastGPS-combined files: any *-1-Locations.csv not starting with ._
-  fastgps <- list.files(dir, pattern = "^[^.][^_].*-1-Locations\\.csv$",
+  # FastGPS-combined files: *-2-Locations.csv for BOF, *-1-Locations.csv for Cape Cod
+  suffix  <- if (is_bof) "-2-Locations\\.csv$" else "-1-Locations\\.csv$"
+  fastgps <- list.files(dir, pattern = paste0("^[^.][^_].*", suffix),
                         full.names = TRUE)
   # Plain Argos-only file
   plain   <- list.files(dir,
@@ -77,31 +81,53 @@ ssm_input <- locations |>
   select(id, date, lc, lon, lat, smaj, smin, eor, year, region) |>
   arrange(id, date)
 
-# ─── 4. Trim leading/trailing isolated points (gap > 1 day at each end) ───────
-# Removes lone observations separated from the main tracking body at start/end.
+# ─── 4. Split at gaps > 24 hours, keep largest segment, save trimmed sections ──
+# For each whale, splits the track at every gap > 24 hours. The largest segment
+# (by number of observations) is kept for the SSM. All other segments are stored
+# in trimmed_segments as named data frames (name = "whaleID_seg#").
 
-trim_end_gaps <- function(df, gap_days = 1) {
-  # Trim from start: remove first row while gap to next > 1 day
-  while (nrow(df) >= 2 &&
-         as.numeric(difftime(df$date[2], df$date[1], units = "days")) > gap_days) {
-    df <- df[-1, ]
-  }
-  # Trim from end: remove last row while gap from previous > 1 day
-  while (nrow(df) >= 2) {
-    n <- nrow(df)
-    if (as.numeric(difftime(df$date[n], df$date[n - 1], units = "days")) > gap_days) {
-      df <- df[-n, ]
-    } else {
-      break
+trimmed_segments <- list()
+
+split_on_gaps <- function(df, whale_id, gap_hours = 24) {
+  gaps    <- as.numeric(difftime(df$date[-1], df$date[-nrow(df)], units = "hours"))
+  breaks  <- which(gaps > gap_hours)
+
+  # Build segment index: start/end row for each segment
+  starts <- c(1, breaks + 1)
+  ends   <- c(breaks, nrow(df))
+  segs   <- mapply(function(s, e) df[s:e, ], starts, ends, SIMPLIFY = FALSE)
+
+  # Keep the largest segment (most observations)
+  keep_idx  <- which.max(vapply(segs, nrow, integer(1)))
+  kept      <- segs[[keep_idx]]
+  discarded <- segs[-keep_idx]
+
+  # Store discarded segments in the global trimmed_segments list
+  if (length(discarded) > 0) {
+    labels <- seq_along(discarded)
+    labels <- labels[labels != keep_idx]   # preserve original segment numbering
+    for (i in seq_along(discarded)) {
+      key <- paste0(whale_id, "_seg", labels[i])
+      trimmed_segments[[key]] <<- discarded[[i]]
     }
   }
-  df
+
+  kept
 }
 
 ssm_input <- ssm_input |>
   group_by(id) |>
-  group_modify(~ trim_end_gaps(.x)) |>
+  group_modify(~ split_on_gaps(.x, whale_id = .y$id)) |>
   ungroup()
+
+if (length(trimmed_segments) > 0) {
+  cat("\nTrimmed segments saved (", length(trimmed_segments), "total ):\n")
+  for (nm in names(trimmed_segments)) {
+    cat(" ", nm, "—", nrow(trimmed_segments[[nm]]), "observations\n")
+  }
+} else {
+  cat("\nNo segments trimmed (no gaps > 24 hours found)\n")
+}
 
 # ─── 5. Exclude whales with < 1 day of data ───────────────────────────────────
 
@@ -139,9 +165,9 @@ ssm_data <- ssm_input |> select(id, date, lc, lon, lat, smaj, smin, eor)
 
 fit <- fit_ssm(
   ssm_data,
-  model     = "crw",
+  model     = "mp",
   time.step = 6,
-  vmax      = 5,
+  #vmax      = 5,
   control   = ssm_control(verbose = 1)
 )
 
@@ -153,16 +179,23 @@ print(fit)
 predicted <- grab(fit, what = "predicted")   # regularised 6-hour locations
 fitted    <- grab(fit, what = "fitted")       # model locations at obs times
 
+# Reroute predicted locations around land
+fit_rerouted <- route_path(fit, what = "predicted")
+rerouted     <- grab(fit_rerouted, what = "rerouted")
+
 # Re-attach year and region metadata
 meta <- ssm_input |>
   distinct(id, year, region)
 
 predicted <- left_join(predicted, meta, by = "id")
 fitted    <- left_join(fitted,    meta, by = "id")
+rerouted  <- left_join(rerouted,  meta, by = "id")
 
 write_csv(predicted, "Results/ssm_predicted_locations.csv")
 write_csv(fitted,    "Results/ssm_fitted_locations.csv")
+write_csv(rerouted,  "Results/ssm_rerouted_locations.csv")
 
 cat("\nResults saved:\n")
 cat("  Results/ssm_predicted_locations.csv  (", nrow(predicted), "rows )\n")
 cat("  Results/ssm_fitted_locations.csv     (", nrow(fitted),    "rows )\n")
+cat("  Results/ssm_rerouted_locations.csv   (", nrow(rerouted),  "rows )\n")
