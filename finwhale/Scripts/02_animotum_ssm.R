@@ -180,8 +180,48 @@ predicted <- grab(fit, what = "predicted")   # regularised 6-hour locations
 fitted    <- grab(fit, what = "fitted")       # model locations at obs times
 
 # Reroute predicted locations around land
-fit_rerouted <- route_path(fit, what = "predicted")
+fit_rerouted <- route_path(fit, what = "predicted", map_scale = 10, buffer = 10000)
 rerouted     <- grab(fit_rerouted, what = "rerouted")
+
+# prt_trim() inside route_path drops predicted locations that fall on land.
+# The code below (currently commented out) snaps those points to the nearest
+# water location instead of deleting them.
+#
+# OPTION A — restore at predicted coordinates (on land):
+# dropped <- anti_join(
+#   predicted |> select(id, date, lon, lat, x, y, x.se, y.se, logit_g, logit_g.se, g),
+#   rerouted  |> select(id, date),
+#   by = c("id", "date")
+# )
+# if (nrow(dropped) > 0) {
+#   rerouted <- bind_rows(rerouted, dropped) |> arrange(id, date)
+# }
+#
+# OPTION B — snap dropped points to nearest water (requires sf, rnaturalearth):
+# dropped_sf <- dropped |>
+#   st_as_sf(coords = c("lon","lat"), crs = 4326) |>
+#   st_transform(crs = 3857)
+# world_mc <- ne_countries(scale = 10, returnclass = "sf") |>
+#   st_transform(crs = 3857) |> st_make_valid()
+# land_region <- suppressWarnings(
+#   st_buffer(dropped_sf, dist = 10000) |> st_union() |> st_convex_hull() |>
+#   st_intersection(world_mc) |> st_collection_extract("POLYGON") |> st_sf()
+# )
+# land_boundary <- st_cast(st_union(land_region), "MULTILINESTRING")
+# nudge <- 200  # metres past the coastline into water
+# snapped <- lapply(seq_len(nrow(dropped_sf)), function(i) {
+#   pt    <- dropped_sf[i, ]
+#   nline <- st_nearest_points(pt, land_boundary) |> st_cast("POINT")
+#   coast <- nline[2]
+#   dist_m <- as.numeric(st_distance(pt, coast))
+#   vec    <- st_coordinates(coast) - st_coordinates(pt)
+#   norm   <- sqrt(sum(vec^2))
+#   st_sfc(st_point(st_coordinates(pt) + vec / norm * (dist_m + nudge)), crs = 3857)
+# })
+# snapped_sf <- do.call(c, snapped) |> st_sf() |> st_transform(4326)
+# dropped$lon <- st_coordinates(snapped_sf)[,1]
+# dropped$lat <- st_coordinates(snapped_sf)[,2]
+# rerouted <- bind_rows(rerouted, dropped) |> arrange(id, date)
 
 # Re-attach year and region metadata
 meta <- ssm_input |>

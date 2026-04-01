@@ -7,7 +7,7 @@ Analysis of New England Fin Whale satellite tag data.
 - Local root: `C:/Users/Green Sturgeon/claude/`
 
 ## Environment
-- **R**: `C:/Program Files/R/R-4.3.3/bin/Rscript` — NOT in bash PATH, always use full path
+- **R**: `C:/Program Files/R/R-4.4.2/bin/Rscript` — NOT in bash PATH, always use full path
 - **Python**: 3.11.5, available in PATH
 - **Platform**: Windows 11, shell is bash (use Unix-style paths and syntax)
 
